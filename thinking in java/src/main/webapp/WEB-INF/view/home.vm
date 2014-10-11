@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="UTF-8">
+    <title>奶爸去哪儿</title>
+    <link rel="stylesheet" href="http://qunarzz.com/qunar_babay/prd/main@#parse('ver/main.css.ver').css">
+##    <link rel="stylesheet"
+##          href="http://qunarzz.com/qunar_babay/prd/font/css/font-awesome@#parse('ver/font/css/font-awesome.css.ver').css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+##    <link rel="stylesheet" href="http://qunarzz.com/qunar_babay/prd/css/default/default@b97ba32158496c14fc33030e010657b7.css">
+    <link rel="icon" href="http://source.qunar.com/internal/qunar_babay/qunarBaby.png" type="image/png">
+    <script>
+        var _PRE_LOAD_ = {
+            data: {
+                general: './article/queryArticle.json', 
+                collections: './topic/queryTopic.json',
+                collection: './topic/queryArticlesByPage.json',
+                article: './article/detailArticle.json',
+                settings: './user/queryEmailAndIcon.json',
+                remind: './messages/queryMessage.json',
+                user: './user/queryList.json',
+                write: './writer/queryArticlesByUserName.json'
+            }
+        }
+    </script>
+    <script src="https://qsso.corp.qunar.com/lib/qsso-auth.js"></script>
+</head>
+<body>
+<!-- navi -->
+<header id="nav">
+</header>
+<!-- 首页 -->
+<section id="mainBody" class="main-body hide">
+    <aside class="theme">
+        <div class="theme-word">
+            <img class="theme-name" src="http://source.qunar.com/internal/qunar_babay/titleName.png" alt="奶爸去那儿"/>
+
+            <div class="theme-solgan">聪明我的宝贝</div>
+        </div>
+    </aside>
+    <section id="mainPage" class="pages">
+        <header>
+            <ul id="mainMenu" class="page-menu">
+                <li class="menu-select" data-value="0">奶爸推荐</li>
+                <li class="main-menu-list-item" data-value="1">我的订阅</li>
+                <li class="main-menu-list-item" data-value="2">我的收藏</li>
+            </ul>
+            <div class="search">
+                <input id="searchInput" class="searchBox" type="text" placeholder="搜索">
+
+                <div id='inputClear'><i class='fa fa-close'></i></div>
+            </div>
+        </header>
+        <ul class="label-list">
+            <li class="label-item item-selected" data-value="0">全部</li>
+            <li class="label-item" data-value="0">怀孕</li>
+            <li class="label-item" data-value="0">产后</li>
+            <li class="label-item" data-value="0">早教</li>
+            <li class="label-item" data-value="0">食谱</li>
+            <li class="label-item" data-value="0">其他</li>
+        </ul>
+        <ul id="mainList" class="main-list">
+        </ul>
+        <div id="homePageMore" class="page-more">MORE</div>
+    </section>
+</section>
+<!-- 专题页 -->
+<section id="collectionBody" class="main-body hide">
+    <aside class="collection-theme">
+        <div class="theme-word">
+            <img class="theme-name" src="http://source.qunar.com/internal/qunar_babay/titleName.png" alt="专题 所属你的日志"/>
+
+            <div class="theme-solgan">聪明我的宝贝</div>
+        </div>
+    </aside>
+    <section id="collectionsPage" class="pages">
+        <header>
+            <ul id="collectionMenu" class="page-menu">
+                <li class="menu-select all-collections" data-value="0">全部专题</li>
+                <li class="my-collections" data-value="1">我的专题</li>
+                <li class="my-reserve" data-value="2">我的订阅</li>
+            </ul>
+        </header>
+        <ul id="collectionList" class="main-list"></ul>
+        <div id="collectionsMore" class="page-more">MORE</div>
+    </section>
+</section>
+<!-- 专题详情 -->
+<section id="topicBody" class="main-body hide">
+    <section class="pages">
+        <header>
+            <ul class="page-menu">
+                <li class="menu-select">最新文章</li>
+            </ul>
+        </header>
+        <ul id="collectionArticleList" class="main-list"></ul>
+        <div id="collectionArcicleMore" class="page-more">MORE</div>
+    </section>
+</section>
+<!-- 写文章 -->
+<section id="writeBody" class="main-body hide"></section>
+<!-- 文章详情页面 -->
+<section id="article" class="main-body article-body hide">
+</section>
+<!-- 个人主页 -->
+<section id="user" class="main-body hide">
+    <section class="pages show">
+        <header>
+            <ul id="userArticleList" class="page-menu">
+                <li class="menu-select" data-value="0">已发布</li>
+                <li data-value="1">收藏</li>
+                <li data-value="2">订阅</li>
+            </ul>
+        </header>
+        <ul id="userArticles" class="main-list">
+        </ul>
+        <div id="userArticlesMore" class="page-more">MORE</div>
+    </section>
+</section>
+<!-- 设置 -->
+<section id="settingsBody" class="main-body form-pages hide">
+</section>
+<!-- 提醒页面 -->
+<section id="remindBody" class="main-body hide">
+    <aside class="remind-theme">-
+        <div class="theme-word">
+            <img class="theme-name" src="http://source.qunar.com/internal/qunar_babay/titleName.png" alt="奶爸去那儿"/>
+
+            <div class="theme-solgan">聪明我的宝贝</div>
+        </div>
+    </aside>
+    <section class="pages">
+        <header class="form-header">
+            <i class="fa fa-bell-o"></i> 最近动态
+        </header>
+        <ul id="remindList" class="remind-list">
+        </ul>
+    </section>
+</section>
+<!-- 新建专题页面 -->
+<section id="newCollection" class="main-body form-pages hide">
+    <header class="form-header">
+        <i class="fa fa-th"></i> 新建专题
+    </header>
+    <div class="form-contnet">
+        <div class="coloum coloum-left">
+            <input id="specialName" class="text-input" type="text" placeholder="输入专题名称，字数少于10" maxlength="10" autofocus
+                   required="required">
+            <textarea name="specialDescribe" maxlength="50" id="specialDescribe" type="text"
+                      placeholder="请输入对于该专题的描述文字,字数少于50"></textarea>
+
+            <div class="special-tag"><i class="fa fa-tags"></i>
+
+                <p class="special-tag-list"></p><input id="addTypeInput" type="text" placeholder="请输入标签，最多三个"
+                                                       maxlength="10"></div>
+        </div>
+        <div class="coloum coloum-right">
+            <div id="changePic">
+                <div class="img-mark">点击更换</div>
+                <input id="newCollectionImgIput" class="hide-img-button" type="file">
+            </div>
+        </div>
+    </div>
+    <footer id="newCollectionsubmit" class="form-footer">
+        创建专题
+    </footer>
+</section>
+<!-- 回到顶部 -->
+<div id="backToTop">
+</div>
+<script src='http://qunarzz.com/qunar_babay/prd/index@#parse('ver/index.js.ver').js'></script>
+</body>
+</html>

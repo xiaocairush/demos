@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-autowire="byName">
+
+    <context:component-scan base-package="qunar.web.spring,com.qunar.qparenting.web.controller"/>
+    <!--<mvc:annotation-driven/>-->
+
+    <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
+        <property name="resourceLoaderPath">
+            <value>/WEB-INF/view/</value>
+        </property>
+        <property name="velocityProperties">
+            <props>
+                <prop key="input.encoding">UTF-8</prop>
+                <prop key="output.encoding">UTF-8</prop>
+                <prop key="velocimacro.library">macro.vm</prop>
+                <prop key="velocimacro.library.autoreload">true</prop>
+            </props>
+        </property>
+    </bean>
+    <bean class="org.springframework.web.servlet.view.velocity.VelocityLayoutViewResolver">
+        <property name="suffix" value=".vm"/>
+        <property name="contentType" value="text/html;charset=utf-8"/>
+        <property name="layoutUrl" value="layout.vm"/>
+        <property name="exposeSpringMacroHelpers" value="true"/>
+        <property name="exposeRequestAttributes" value="true"/>
+        <property name="requestContextAttribute" value="rc"/>
+        <property name="toolboxConfigLocation" value="/WEB-INF/toolbox.xml"/>
+    </bean>
+
+    <bean id="HandlerExceptionResolver" class="com.qunar.qparenting.web.exception.SimpleExceptionResolver"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/article/praiseArticle.json"/>
+            <mvc:mapping path="/article/collectArticle.json"/>
+            <mvc:mapping path="/comment/insertComment.json"/>
+            <mvc:mapping path="/user/logout.json"/>
+            <mvc:mapping path="/user/queryEmailAndIcon.json"/>
+            <mvc:mapping path="/user/setIcon.json"/>
+            <mvc:mapping path="/user/setEmailPushType.json"/>
+            <mvc:mapping path="/topic/orderTopic.json"/>
+            <mvc:mapping path="/topic/cancelTopic.json"/>
+            <mvc:mapping path="/topic/createTopic.json"/>
+            <mvc:mapping path="/topic/deleteTopic.json"/>
+            <mvc:mapping path="/topic/insertImage.json"/>
+            <mvc:mapping path="/messages/isNewMessageExist.json"/>
+            <mvc:mapping path="/messages/queryMessage.json"/>
+            <mvc:mapping path="/writer/queryArticlesByUserName.json"/>
+            <mvc:mapping path="/writer/queryArticleByArticleId.json"/>
+            <mvc:mapping path="/writer/createArticle.json"/>
+            <mvc:mapping path="/writer/insertImage.json"/>
+            <mvc:mapping path="/writer/saveArticle.json"/>
+            <mvc:mapping path="/writer/releaseArticle.json"/>
+            <mvc:mapping path="/writer/chooseTopicToRelease.json"/>
+            <mvc:mapping path="/writer/deleteArticle.json"/>
+            <bean class="com.qunar.qparenting.web.intercept.LoginInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/"/>
+            <bean class="com.qunar.qparenting.web.intercept.BrowserInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="maxUploadSize" value="1048576"/>
+        <property name="maxInMemorySize" value="10485760"/>
+    </bean>
+
+    <mvc:default-servlet-handler/>
+</beans>

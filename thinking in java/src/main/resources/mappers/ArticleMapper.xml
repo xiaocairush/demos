@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qunar.qparenting.dao.ArticleDao">
+
+    <resultMap id="BaseResultMap" type="com.qunar.qparenting.model.bean.ArticleBean">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="author_name" property="authorName" jdbcType="VARCHAR"/>
+        <result column="article_title" property="articleTitle" jdbcType="VARCHAR"/>
+        <result column="article_abstract" property="articleAbstract" jdbcType="VARCHAR"/>
+        <result column="topic_id" property="topicId" jdbcType="INTEGER"/>
+        <result column="article_comment_number" property="articleCommentNumber" jdbcType="INTEGER"/>
+        <result column="article_collect_number" property="articleCollectNumber" jdbcType="INTEGER"/>
+        <result column="article_praise_number" property="articlePraiseNumber" jdbcType="INTEGER"/>
+        <result column="article_create_time" property="articleCreateTime" jdbcType="TIMESTAMP"/>
+        <result column="article_update_time" property="articleUpdateTime" jdbcType="TIMESTAMP"/>
+        <result column="article_status" property="articleStatus" jdbcType="TINYINT"/>
+        <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
+        <result column="article_content" property="articleContent" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+
+    <select id="selectAll" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        id,
+        author_name,
+        article_title,
+        article_abstract,
+        topic_id,
+        article_comment_number,
+        article_collect_number,
+        article_praise_number
+        from q_article where q_article.is_delete = 0 and
+        q_article.article_status = 1 GROUP BY id order by q_article.id desc
+
+    </select>
+
+
+    <sql id="Base_Column_List">
+        id, author_name, article_title, article_abstract, article_content, topic_id, article_comment_number,
+        article_collect_number, article_praise_number, article_create_time, article_update_time,
+        article_status, is_delete
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        id, author_name, article_title, article_abstract, article_content, topic_id, article_comment_number,
+        article_collect_number, article_praise_number, article_create_time, article_update_time,
+        article_status, is_delete,article_url
+        from q_article
+        where id = #{id,jdbcType=INTEGER} and is_delete = 0 and article_status = 1
+    </select>
+
+    <select id="selectByKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        q_article.id,
+        q_article.author_name,
+        q_article.article_title,
+        q_article.article_abstract,
+        q_article.topic_id,
+        q_article.article_comment_number,
+        q_article.article_collect_number,
+        q_article.article_praise_number
+        from q_article INNER JOIN q_tag_key ON q_article.id=q_tag_key.article_topic_id
+        WHERE q_tag_key.tag_key like CONCAT(#{key},'%') and q_article.is_delete = 0 and
+        q_article.article_status = 1 GROUP BY q_article.id order by id desc
+
+    </select>
+
+    <select id="selectByTag" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        q_article.id,
+        q_article.author_name,
+        q_article.article_title,
+        q_article.article_abstract,
+        q_article.topic_id,
+        q_article.article_comment_number,
+        q_article.article_collect_number,
+        q_article.article_praise_number
+        from q_article INNER JOIN q_tag_key ON q_article.id=q_tag_key.article_topic_id and q_tag_key.article_topic_type
+        = 1
+        WHERE ( q_tag_key.tag_key like CONCAT(#{tag},'%') or q_article.article_type =
+        #{_parameter,jdbcType=VARCHAR} ) and q_article.is_delete = 0 and
+        q_article.article_status = 1 GROUP BY q_article.id order by id desc
+    </select>
+
+    <select id="selectByCol" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        q_article.id,
+        q_article.author_name,
+        q_article.article_title,
+        q_article.article_abstract,
+        q_article.topic_id,
+        q_article.article_comment_number,
+        q_article.article_collect_number,
+        q_article.article_praise_number
+        from q_article INNER JOIN q_collect ON q_article.id=q_collect.article_id
+        WHERE q_collect.user_name = #{_parameter,jdbcType=VARCHAR} and q_article.is_delete = 0 and
+        q_article.article_status = 1 GROUP BY q_article.id order by id desc
+
+    </select>
+
+    <select id="selectBySub" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        q_article.id,
+        q_article.author_name,
+        q_article.article_title,
+        q_article.article_abstract,
+        q_article.topic_id,
+        q_article.article_comment_number,
+        q_article.article_collect_number,
+        q_article.article_praise_number
+        FROM q_article WHERE q_article.topic_id IN (SELECT q_subscribe.topic_id FROM qparenting.q_subscribe where
+        user_name = #{_parameter,jdbcType=VARCHAR})
+        and q_article.is_delete = 0 and q_article.article_status = 1 GROUP BY q_article.id order by id desc
+
+    </select>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.qunar.qparenting.model.bean.ArticleBean">
+        update q_article
+        <set>
+            <if test="authorName != null">
+                author_name = #{authorName,jdbcType=VARCHAR},
+            </if>
+            <if test="articleTitle != null">
+                article_title = #{articleTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="articleAbstract != null">
+                article_abstract = #{articleAbstract,jdbcType=VARCHAR},
+            </if>
+            <if test="topicId != null">
+                topic_id = #{topicId,jdbcType=INTEGER},
+            </if>
+            <if test="articleCommentNumber != null">
+                article_comment_number = #{articleCommentNumber,jdbcType=INTEGER},
+            </if>
+            <if test="articleCollectNumber != null">
+                article_collect_number = #{articleCollectNumber,jdbcType=INTEGER},
+            </if>
+            <if test="articlePraiseNumber != null">
+                article_praise_number = #{articlePraiseNumber,jdbcType=INTEGER},
+            </if>
+            <if test="articleCreateTime != null">
+                article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="articleUpdateTime != null">
+                article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="articleStatus != null">
+                article_status = #{articleStatus,jdbcType=TINYINT},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete,jdbcType=TINYINT},
+            </if>
+            <if test="articleContent != null">
+                article_content = #{articleContent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <update id="updateByPrimaryKey" parameterType="com.qunar.qparenting.model.bean.ArticleBean">
+        update q_article
+        set author_name = #{authorName,jdbcType=VARCHAR},
+        article_title = #{articleTitle,jdbcType=VARCHAR},
+        article_abstract = #{articleAbstract,jdbcType=VARCHAR},
+        article_content = #{articleContent,jdbcType=LONGVARCHAR},
+        topic_id = #{topicId,jdbcType=INTEGER},
+        article_comment_number = #{articleCommentNumber,jdbcType=INTEGER},
+        article_collect_number = #{articleCollectNumber,jdbcType=INTEGER},
+        article_praise_number = #{articlePraiseNumber,jdbcType=INTEGER},
+        article_create_time = #{articleCreateTime,jdbcType=TIMESTAMP},
+        article_update_time = #{articleUpdateTime,jdbcType=TIMESTAMP},
+        article_status = #{articleStatus,jdbcType=TINYINT},
+        is_delete = #{isDelete,jdbcType=TINYINT}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <select id="selectOwnArticles" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select id,article_title,article_status from q_article where author_name = #{userName} and is_delete=0 order by
+        id desc
+    </select>
+
+    <select id="selectArticle" parameterType="int" resultMap="BaseResultMap">
+        select id,article_title,article_status,article_content from q_article where id=#{articleId}
+    </select>
+
+    <insert id="insertNewArticle" parameterType="com.qunar.qparenting.model.bean.ArticleBean" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into q_article (author_name,article_content,article_create_time) values (#{authorName},'',null)
+    </insert>
+
+    <update id="updateArticle" parameterType="com.qunar.qparenting.model.bean.ArticleBean">
+        update q_article set article_title=#{articleTitle},article_content=#{articleContent},article_abstract=#{articleAbstract}  where id=#{id}
+
+    </update>
+
+    <update id="setDeleteStatus" parameterType="int">
+        update q_article set is_delete=1 where id=#{articleId}
+    </update>
+
+    <update id="updateForRelease" parameterType="com.qunar.qparenting.model.bean.ArticleBean">
+        update q_article set article_title=#{articleTitle},article_content=#{articleContent},article_abstract=#{articleAbstract},topic_id=#{topicId},article_status=1 where id=#{id}
+    </update>
+
+    <!--<select id="selectPraisedNumber" parameterType="java.lang.String" resultType="java.lang.Integer">-->
+    <!--select sum(article_praise_number) from q_article where  author_name = #{userName} and is_delete = 0 and article_status = 1-->
+    <!--</select>-->
+    <select id="selectPraisedNumber" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select COALESCE(SUM(article_praise_number),0) from q_article where author_name = #{userName} and is_delete = 0
+        and article_status = 1
+    </select>
+    <select id="selectArticleNumber" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from q_article where author_name = #{userName} and is_delete = 0 and article_status = 1
+    </select>
+
+    <select id="selectDeployedArticles" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        id,
+        author_name,
+        article_title,
+        article_abstract,
+        topic_id,
+        article_comment_number,
+        article_collect_number,
+        article_praise_number
+        from q_article
+        WHERE author_name = #{_parameter,jdbcType=VARCHAR} and is_delete = 0 and article_status = 1
+    </select>
+
+    <select id="selectCollectArticle" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        q_article.id,
+        q_article.author_name,
+        q_article.article_title,
+        q_article.article_abstract,
+        q_article.topic_id,
+        q_article.article_comment_number,
+        q_article.article_collect_number,
+        q_article.article_praise_number
+        from q_article INNER JOIN q_collect ON q_article.id=q_collect.article_id
+        WHERE q_collect.user_name = #{_parameter,jdbcType=VARCHAR} and q_article.is_delete = 0 and
+        q_article.article_status = 1
+    </select>
+
+    <update id="updateArticleStatus" parameterType="java.util.Map">
+        update q_article
+        set article_status = 0
+        where topic_id = #{topicId,jdbcType=INTEGER}
+    </update>
+
+    <select id="queryArticleNumberByTopicId" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from q_article
+        where is_delete = 0 and topic_id = #{topicId} and article_status = 1
+    </select>
+
+    <select id="queryArticlesByPage" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        id,author_name,article_title,article_abstract
+        from q_article
+        where is_delete = 0 and topic_id = #{topicId} and article_status = 1 order by id desc
+    </select>
+</mapper>

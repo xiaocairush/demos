@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qunar.qparenting.dao.CommentDao">
+
+    <resultMap id="BaseResultMap" type="com.qunar.qparenting.model.bean.CommentBean">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="article_id" property="articleId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="article_comment" property="articleComment" jdbcType="VARCHAR"/>
+        <result column="comment_time" property="commentTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, article_id, user_name, article_comment, comment_time
+    </sql>
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from q_comment
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectByArticleId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from q_comment
+        where article_id = #{articleId,jdbcType=INTEGER} order by comment_time desc
+    </select>
+
+    <insert id="insert" parameterType="com.qunar.qparenting.model.bean.CommentBean" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into q_comment (id, article_id, user_name,
+        article_comment, comment_time)
+        values (#{id,jdbcType=INTEGER}, #{articleId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR},
+        #{articleComment,jdbcType=VARCHAR}, #{commentTime,jdbcType=TIMESTAMP})
+    </insert>
+
+</mapper>

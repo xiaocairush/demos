@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qunar.qparenting.dao.TopicDao">
+
+    <resultMap id="BaseResultMap" type="com.qunar.qparenting.model.bean.TopicBean">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="topic_name" property="topicName" jdbcType="VARCHAR"/>
+        <result column="author_name" property="authorName" jdbcType="VARCHAR"/>
+        <result column="topic_number" property="topicNumber" jdbcType="INTEGER"/>
+        <result column="topic_abstract" property="topicAbstract" jdbcType="VARCHAR"/>
+        <result column="topic_image" property="topicImage" jdbcType="VARCHAR"/>
+        <result column="topic_create_time" property="topicCreateTime" jdbcType="TIMESTAMP"/>
+        <result column="topic_update_time" property="topicUpdateTime" jdbcType="TIMESTAMP"/>
+        <result column="is_delete" property="isDelete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <resultMap id="SimpleTopicMap" type="com.qunar.qparenting.model.bean.SimpleTopicBean">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="topic_name" property="topicName" jdbcType="VARCHAR"/>
+        <result column="topic_image" property="topicImage" jdbcType="VARCHAR"/>
+    </resultMap>
+
+
+    <sql id="Base_Column_List">
+        id, topic_name, author_name, topic_number, topic_abstract, topic_image, topic_create_time,
+        topic_update_time, is_delete
+    </sql>
+
+
+    <select id="queryTopicDetailById" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        id,topic_name,author_name,topic_number,topic_image,topic_abstract
+        from q_topic
+        where id = #{topicId} and is_delete = 0
+    </select>
+
+    <select id="querySimpleTopicUserName" resultMap="SimpleTopicMap" parameterType="java.util.Map">
+        select
+        id,topic_name,topic_image
+        from q_topic
+        where author_name = #{authorName,jdbcType=VARCHAR} and is_delete = 0
+    </select>
+    <select id="queryMyTopic" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        id,topic_name,author_name,topic_number,topic_image
+        from q_topic
+        where author_name = #{authorName,jdbcType=VARCHAR} and is_delete = 0
+    </select>
+
+    <select id="queryMyOrder" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        a.id,topic_name,author_name,topic_number,topic_image
+        from q_topic a join q_subscribe b on a.id = b.topic_id
+        where user_name = #{userName,jdbcType=VARCHAR} and is_delete = 0
+    </select>
+
+
+    <select id="queryTopicCountByUserName" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from q_topic
+        where author_name = #{userName,jdbcType=VARCHAR} and is_delete = 0
+    </select>
+
+    <select id="queryTopicNumberByTopicName" resultType="Integer" parameterType="java.util.Map">
+        select
+        count(*)
+        from q_topic
+        where topic_name = #{topicName,jdbcType=VARCHAR} and is_delete = 0
+    </select>
+
+
+    <select id="queryAllTopic" resultMap="BaseResultMap" parameterType="java.util.Map">
+        select
+        id,topic_name,author_name,topic_number,topic_image
+        from q_topic
+        where is_delete = 0
+    </select>
+
+
+    <select id="getTopicIdByUserNameAndTopicName" resultType="Integer" parameterType="java.util.Map">
+        select
+        id
+        from q_topic
+        where is_delete = 0 and author_name = #{userName,jdbcType=VARCHAR} and topic_name =
+        #{topicName,jdbcType=VARCHAR}
+    </select>
+
+
+    <update id="updateOrderById" parameterType="java.util.Map">
+        update q_topic
+        <set>topic_number = #{num,jdbcType=INTEGER}
+        </set>
+        where id = #{topicId,jdbcType=INTEGER}
+    </update>
+
+    <update id="deleteTopicById" parameterType="java.util.Map">
+        update q_topic
+        <set>is_delete = 1
+        </set>
+        where id = #{topicId,jdbcType=INTEGER};
+    </update>
+
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from q_topic
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <insert id="insert" parameterType="com.qunar.qparenting.model.bean.TopicBean">
+        insert into q_topic (id, topic_name, author_name,
+        topic_number, topic_abstract, topic_image,
+        topic_create_time, topic_update_time, is_delete
+        )
+        values (#{id,jdbcType=INTEGER}, #{topicName,jdbcType=VARCHAR}, #{authorName,jdbcType=VARCHAR},
+        #{topicNumber,jdbcType=INTEGER}, #{topicAbstract,jdbcType=VARCHAR}, #{topicImage,jdbcType=VARCHAR},
+        #{topicCreateTime,jdbcType=TIMESTAMP}, #{topicUpdateTime,jdbcType=TIMESTAMP}, #{isDelete,jdbcType=TINYINT}
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.qunar.qparenting.model.bean.TopicBean">
+        insert into q_topic
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="topicName != null">
+                topic_name,
+            </if>
+            <if test="authorName != null">
+                author_name,
+            </if>
+            <if test="topicNumber != null">
+                topic_number,
+            </if>
+            <if test="topicAbstract != null">
+                topic_abstract,
+            </if>
+            <if test="topicImage != null">
+                topic_image,
+            </if>
+            <if test="topicCreateTime != null">
+                topic_create_time,
+            </if>
+            <if test="topicUpdateTime != null">
+                topic_update_time,
+            </if>
+            <if test="isDelete != null">
+                is_delete,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="topicName != null">
+                #{topicName,jdbcType=VARCHAR},
+            </if>
+            <if test="authorName != null">
+                #{authorName,jdbcType=VARCHAR},
+            </if>
+            <if test="topicNumber != null">
+                #{topicNumber,jdbcType=INTEGER},
+            </if>
+            <if test="topicAbstract != null">
+                #{topicAbstract,jdbcType=VARCHAR},
+            </if>
+            <if test="topicImage != null">
+                #{topicImage,jdbcType=VARCHAR},
+            </if>
+            <if test="topicCreateTime != null">
+                #{topicCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="topicUpdateTime != null">
+                #{topicUpdateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete != null">
+                #{isDelete,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+
+
+</mapper>

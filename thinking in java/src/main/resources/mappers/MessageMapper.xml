@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qunar.qparenting.dao.MessageDao">
+    <resultMap id="BaseResultMap" type="com.qunar.qparenting.model.bean.MessageBean">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="reader_name" property="readerName" jdbcType="VARCHAR"/>
+        <result column="writer_name" property="writerName" jdbcType="VARCHAR"/>
+        <result column="message_type" property="messageType" jdbcType="TINYINT"/>
+        <result column="article_topic_id" property="articleTopicId" jdbcType="INTEGER"/>
+        <result column="article_topic_name" property="articleTopicName"/>
+        <result column="message_time" property="messageTime" jdbcType="TIMESTAMP"/>
+        <result column="is_read_status" property="isReadStatus"/>
+    </resultMap>
+
+    <select id="selectNotReadCountByReaderName" resultType="int">
+        <![CDATA[select count(*) from q_message where reader_name=#{param1} and is_read_status=#{param2} and date_sub(curdate(), interval 7 day) <= message_time]]>
+    </select>
+
+    <select id="selectMessageByReaderName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        <![CDATA[select id,writer_name,message_type,article_topic_id,article_topic_name,message_time from q_message where reader_name=#{readerName}and date_sub(curdate(), interval 7 day) <= message_time order by message_time desc]]>
+    </select>
+
+    <insert id="insertMessage" parameterType="com.qunar.qparenting.model.bean.MessageBean" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into q_message(reader_name,writer_name,message_type,article_topic_id,article_topic_name) values
+        (#{readerName},#{writerName},#{messageType},#{articleTopicId},#{articleTopicName})
+    </insert>
+
+    <update id="setReadStatus" parameterType="java.util.List">
+        update q_message set is_read_status=1 where id in
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+            #{item.id}
+        </foreach>
+    </update>
+
+    <insert id="insertMessages" parameterType="java.util.List">
+        insert into q_message (reader_name,writer_name,message_type,article_topic_id,article_topic_name) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.readerName},#{item.writerName},#{item.messageType},#{item.articleTopicId},#{item.articleTopicName})
+        </foreach>
+    </insert>
+
+</mapper>

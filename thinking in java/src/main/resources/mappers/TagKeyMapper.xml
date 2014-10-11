@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.qunar.qparenting.dao.TagKeyDao">
+    <resultMap id="BaseResultMap" type="com.qunar.qparenting.model.bean.TagKeyBean">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="article_topic_id" property="articleTopicId" jdbcType="INTEGER"/>
+        <result column="article_topic_type" property="articleTopicType" jdbcType="INTEGER"/>
+        <result column="tag_key" property="tagKey" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, article_topic_id, article_topic_type, tag_key
+    </sql>
+
+    <select id="queryTagById" resultType="String" parameterType="java.util.Map">
+        select
+        tag_key
+        from q_tag_key
+        where article_topic_id = #{topicId} and article_topic_type = 0
+    </select>
+
+    <insert id="insertTag" parameterType="java.util.Map">
+        insert into q_tag_key (tag_key,article_topic_id,article_topic_type)
+        values ( #{tagKey}, #{articleTopicId},#{articleTopicType})
+    </insert>
+
+    <delete id="deleteTagByTopicId" parameterType="java.lang.Integer">
+        delete from q_tag_key
+        where article_topic_id = #{topicId,jdbcType=INTEGER} and article_topic_type =0
+    </delete>
+
+
+</mapper>
